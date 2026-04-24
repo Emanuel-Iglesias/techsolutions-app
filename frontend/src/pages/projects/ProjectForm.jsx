@@ -1,3 +1,4 @@
+import logo from '../../assets/logo_tech.png'
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import api from '../../api/axios'
@@ -38,43 +39,70 @@ export default function ProjectForm() {
   }
 
   return (
-    <div style={{ maxWidth: 400, margin: '40px auto', padding: 24 }}>
-      <h2>{id ? 'Editar' : 'Nuevo'} Proyecto</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>Nombre</label>
-          <input name="name" value={form.name} onChange={handleChange} required style={{ display: 'block', width: '100%', marginBottom: 12 }} />
+    <div className="min-h-screen bg-gray-100">
+      <nav className="bg-blue-600 text-white px-6 py-4 flex justify-between items-center shadow">
+        <div className="flex items-center gap-2">
+          <img src={logo} alt="TechSolutions" className="h-8" />
+          <span className="text-lg font-bold">TechSolutions</span>
         </div>
-        <div>
-          <label>Descripción</label>
-          <textarea name="description" value={form.description} onChange={handleChange} style={{ display: 'block', width: '100%', marginBottom: 12 }} />
+        <button onClick={() => navigate('/projects')} className="bg-white text-blue-600 px-4 py-1 rounded-lg text-sm font-semibold hover:bg-gray-100 transition">← Proyectos</button>
+      </nav>
+      <div className="max-w-lg mx-auto mt-10 px-6">
+        <div className="bg-white rounded-2xl shadow p-8">
+          <h2 className="text-2xl font-bold text-gray-700 mb-6">{id ? 'Editar' : 'Nuevo'} Proyecto</h2>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-600 mb-1">Nombre</label>
+              <input name="name" value={form.name} onChange={handleChange} required
+                className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-600 mb-1">Descripción</label>
+              <textarea name="description" value={form.description} onChange={handleChange} rows={3}
+                className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-600 mb-1">Fecha Inicio</label>
+                <input name="startDate" type="date" value={form.startDate} onChange={handleChange} required
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-600 mb-1">Fecha Fin</label>
+                <input name="endDate" type="date" value={form.endDate} onChange={handleChange}
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" />
+              </div>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-600 mb-1">Estado</label>
+              <select name="status" value={form.status} onChange={handleChange}
+                className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                <option value="active">Activo</option>
+                <option value="completed">Completado</option>
+                <option value="paused">Pausado</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-600 mb-1">Cliente</label>
+              <select name="clientId" value={form.clientId} onChange={handleChange} required
+                className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                <option value="">Seleccionar cliente</option>
+                {clients.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+              </select>
+            </div>
+            <div className="flex gap-3 pt-2">
+              <button type="submit"
+                className="flex-1 bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition font-semibold">
+                {id ? 'Actualizar' : 'Crear'}
+              </button>
+              <button type="button" onClick={() => navigate('/projects')}
+                className="flex-1 bg-gray-200 text-gray-700 py-2 rounded-lg hover:bg-gray-300 transition font-semibold">
+                Cancelar
+              </button>
+            </div>
+          </form>
         </div>
-        <div>
-          <label>Fecha Inicio</label>
-          <input name="startDate" type="date" value={form.startDate} onChange={handleChange} required style={{ display: 'block', width: '100%', marginBottom: 12 }} />
-        </div>
-        <div>
-          <label>Fecha Fin</label>
-          <input name="endDate" type="date" value={form.endDate} onChange={handleChange} style={{ display: 'block', width: '100%', marginBottom: 12 }} />
-        </div>
-        <div>
-          <label>Estado</label>
-          <select name="status" value={form.status} onChange={handleChange} style={{ display: 'block', width: '100%', marginBottom: 12 }}>
-            <option value="active">Activo</option>
-            <option value="completed">Completado</option>
-            <option value="paused">Pausado</option>
-          </select>
-        </div>
-        <div>
-          <label>Cliente</label>
-          <select name="clientId" value={form.clientId} onChange={handleChange} required style={{ display: 'block', width: '100%', marginBottom: 12 }}>
-            <option value="">Seleccionar cliente</option>
-            {clients.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
-          </select>
-        </div>
-        <button type="submit">{id ? 'Actualizar' : 'Crear'}</button>
-        <button type="button" onClick={() => navigate('/projects')} style={{ marginLeft: 12 }}>Cancelar</button>
-      </form>
+      </div>
     </div>
   )
 }
