@@ -1,12 +1,16 @@
-import logo from '../../assets/logo_tech.png'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import api from '../../api/axios'
+import logo from '../../assets/logo_tech.png'
+import { useAuth } from '../../context/AuthContext'
 import { generateReport } from '../../utils/report'
 
 export default function TaskList() {
   const [tasks, setTasks] = useState([])
   const navigate = useNavigate()
+  const { user } = useAuth()
+  const isAdmin = user?.role === 'ADMIN'
+  const isEmployee = user?.role === 'EMPLOYEE'
 
   const fetchTasks = async () => {
     const res = await api.get('/tasks')
@@ -21,33 +25,20 @@ export default function TaskList() {
     fetchTasks()
   }
 
+  const handleStatusChange = async (task, newStatus) => {
+    await api.put(`/tasks/${task.id}`, { ...task, status: newStatus, projectId: task.projectId, userId: task.userId })
+    fetchTasks()
+  }
+
   const handleReport = () => {
     const columns = ['ID', 'Título', 'Proyecto', 'Responsable', 'Prioridad', 'Estado']
-    const rows = tasks.map(t => [
-      t.id,
-      t.title,
-      t.project?.name || '-',
-      t.user?.name || '-',
-      t.priority,
-      t.status
-    ])
+    const rows = tasks.map(t => [t.id, t.title, t.project?.name || '-', t.user?.name || '-', t.priority, t.status])
     generateReport('Reporte de Tareas', columns, rows)
   }
 
-  const priorityStyle = {
-    HIGH: 'bg-red-100 text-red-700',
-    MEDIUM: 'bg-yellow-100 text-yellow-700',
-    LOW: 'bg-green-100 text-green-700'
-  }
-
+  const priorityStyle = { HIGH: 'bg-red-100 text-red-700', MEDIUM: 'bg-yellow-100 text-yellow-700', LOW: 'bg-green-100 text-green-700' }
   const priorityLabel = { HIGH: 'Alta', MEDIUM: 'Media', LOW: 'Baja' }
-
-  const statusStyle = {
-    pending: 'bg-gray-100 text-gray-700',
-    in_progress: 'bg-blue-100 text-blue-700',
-    completed: 'bg-green-100 text-green-700'
-  }
-
+  const statusStyle = { pending: 'bg-gray-100 text-gray-700', in_progress: 'bg-blue-100 text-blue-700', completed: 'bg-green-100 text-green-700' }
   const statusLabel = { pending: 'Pendiente', in_progress: 'En progreso', completed: 'Completado' }
 
   return (
@@ -61,19 +52,27 @@ export default function TaskList() {
       </nav>
       <div className="max-w-6xl mx-auto mt-8 px-6">
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold text-gray-700">Tareas</h2>
-          <button onClick={handleReport}
-            className="bg-indigo-500 text-white px-4 py-2 rounded-lg hover:bg-indigo-600 transition font-semibold">
-            📄 Reporte
-          </button>
-          <button onClick={() => navigate('/history?entity=tasks')}
-            className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition font-semibold">
-            📋 Historial
-          </button>
-          <button onClick={() => navigate('/tasks/new')}
-            className="bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600 transition font-semibold">
-            + Nueva Tarea
-          </button>
+          <h2 className="text-2xl font-bold text-gray-700">{isAdmin ? 'Tareas' : 'Mis Tareas'}</h2>
+          <div className="flex gap-2">
+            {isAdmin && (
+              <>
+                <button onClick={handleReport}
+                  className="bg-indigo-500 text-white px-4 py-2 rounded-lg hover:bg-indigo-600 transition font-semibold">
+                  📄 Reporte
+                </button>
+                <button onClick={() => navigate('/history?entity=tasks')}
+                  className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition font-semibold">
+                  📋 Historial
+                </button>
+              </>
+            )}
+            {(isAdmin || isEmployee) && (
+              <button onClick={() => navigate('/tasks/new')}
+                className="bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600 transition font-semibold">
+                + Nueva Tarea
+              </button>
+            )}
+          </div>
         </div>
         <div className="bg-white rounded-2xl shadow overflow-hidden">
           <table className="w-full text-sm">
@@ -99,15 +98,30 @@ export default function TaskList() {
                     </span>
                   </td>
                   <td className="px-6 py-4">
-                    <span className={`px-2 py-1 rounded-full text-xs font-semibold ${statusStyle[t.status]}`}>
-                      {statusLabel[t.status]}
-                    </span>
+                    {isEmployee ? (
+                      <select value={t.status} onChange={(e) => handleStatusChange(t, e.target.value)}
+                        className="border border-gray-300 rounded-lg px-2 py-1 text-xs focus:outline-none">
+                        <option value="pending">Pendiente</option>
+                        <option value="in_progress">En progreso</option>
+                        <option value="completed">Completado</option>
+                      </select>
+                    ) : (
+                      <span className={`px-2 py-1 rounded-full text-xs font-semibold ${statusStyle[t.status]}`}>
+                        {statusLabel[t.status]}
+                      </span>
+                    )}
                   </td>
-                  <td className="px-6 py-4 flex gap-2">
-                    <button onClick={() => navigate(`/tasks/edit/${t.id}`)}
-                      className="bg-yellow-400 text-white px-3 py-1 rounded-lg text-xs hover:bg-yellow-500 transition">Editar</button>
-                    <button onClick={() => handleDelete(t.id)}
-                      className="bg-red-500 text-white px-3 py-1 rounded-lg text-xs hover:bg-red-600 transition">Eliminar</button>
+                  <td className="px-6 py-4">
+                    <div className="flex gap-2">
+                      {(isAdmin || isEmployee) && (
+                        <button onClick={() => navigate(`/tasks/edit/${t.id}`)}
+                          className="bg-yellow-400 text-white px-3 py-1 rounded-lg text-xs hover:bg-yellow-500 transition">Editar</button>
+                      )}
+                      {isAdmin && (
+                        <button onClick={() => handleDelete(t.id)}
+                          className="bg-red-500 text-white px-3 py-1 rounded-lg text-xs hover:bg-red-600 transition">Eliminar</button>
+                      )}
+                    </div>
                   </td>
                 </tr>
               ))}

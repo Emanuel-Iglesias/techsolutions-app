@@ -16,6 +16,7 @@ import ChangeLog from './pages/admin/ChangeLog'
 import ProjectDetail from './pages/projects/ProjectDetail'
 import Analytics from './pages/admin/Analytics'
 import History from './pages/admin/History'
+import GeneralReport from './pages/admin/GeneralReport'
 
 const PrivateRoute = ({ children }) => {
   const { user } = useAuth()
@@ -43,8 +44,8 @@ export default function App() {
       <Route path="/projects/new" element={<AdminRoute><ProjectForm /></AdminRoute>} />
       <Route path="/projects/edit/:id" element={<AdminRoute><ProjectForm /></AdminRoute>} />
       <Route path="/tasks" element={<PrivateRoute><TaskList /></PrivateRoute>} />
-      <Route path="/tasks/new" element={<AdminRoute><TaskForm /></AdminRoute>} />
-      <Route path="/tasks/edit/:id" element={<AdminRoute><TaskForm /></AdminRoute>} />
+      <Route path="/tasks/new" element={<PrivateRoute><TaskForm /></PrivateRoute>} />
+      <Route path="/tasks/edit/:id" element={<PrivateRoute><TaskForm /></PrivateRoute>} />
       <Route path="/users" element={<AdminRoute><UserList /></AdminRoute>} />
       <Route path="/users/new" element={<AdminRoute><UserForm /></AdminRoute>} />
       <Route path="/users/edit/:id" element={<AdminRoute><UserForm /></AdminRoute>} />
@@ -53,6 +54,7 @@ export default function App() {
       <Route path="/projects/:id" element={<PrivateRoute><ProjectDetail /></PrivateRoute>} />
       <Route path="/analytics" element={<AdminRoute><Analytics /></AdminRoute>} />
       <Route path="/history" element={<AdminRoute><History /></AdminRoute>} />
+      <Route path="/report" element={<AdminRoute><GeneralReport /></AdminRoute>} />
     </Routes>
   )
 }

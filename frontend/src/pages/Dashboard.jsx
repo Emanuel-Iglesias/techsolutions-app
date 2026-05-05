@@ -11,6 +11,8 @@ export default function Dashboard() {
     navigate('/login')
   }
 
+  const roleLabel = { ADMIN: 'Administrador', EMPLOYEE: 'Empleado', CLIENT: 'Cliente' }
+
   const adminCards = [
     { label: 'Usuarios', path: '/users', color: 'bg-purple-500', icon: '👤' },
     { label: 'Clientes', path: '/clients', color: 'bg-blue-500', icon: '👥' },
@@ -19,6 +21,11 @@ export default function Dashboard() {
     { label: 'Sesiones', path: '/sessions', color: 'bg-red-500', icon: '🔐' },
     { label: 'Historial de Cambios', path: '/changelog', color: 'bg-gray-600', icon: '📋' },
     { label: 'Analíticas', path: '/analytics', color: 'bg-indigo-500', icon: '📊' },
+    { label: 'Informe General', path: '/report', color: 'bg-red-600', icon: '📑' },
+  ]
+
+  const employeeCards = [
+    { label: 'Mis Tareas', path: '/tasks', color: 'bg-yellow-500', icon: '✅' },
   ]
 
   const clientCards = [
@@ -26,7 +33,7 @@ export default function Dashboard() {
     { label: 'Mis Tareas', path: '/tasks', color: 'bg-yellow-500', icon: '✅' },
   ]
 
-  const cards = user?.role === 'ADMIN' ? adminCards : clientCards
+  const cards = user?.role === 'ADMIN' ? adminCards : user?.role === 'EMPLOYEE' ? employeeCards : clientCards
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -36,7 +43,7 @@ export default function Dashboard() {
           <span className="text-lg font-bold">TechSolutions</span>
         </div>
         <div className="flex items-center gap-4">
-          <span className="text-sm">Hola, {user?.name} ({user?.role === 'ADMIN' ? 'Administrador' : 'Cliente'})</span>
+          <span className="text-sm">Hola, {user?.name} ({roleLabel[user?.role]})</span>
           <button onClick={handleLogout}
             className="bg-white text-blue-600 px-4 py-1 rounded-lg text-sm font-semibold hover:bg-gray-100 transition">
             Cerrar Sesión

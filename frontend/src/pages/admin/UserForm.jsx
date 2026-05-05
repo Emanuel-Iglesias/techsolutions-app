@@ -69,6 +69,7 @@ export default function UserForm() {
               <select name="role" value={form.role} onChange={handleChange}
                 className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
                 <option value="CLIENT">Cliente</option>
+                <option value="EMPLOYEE">Empleado</option>
                 <option value="ADMIN">Administrador</option>
               </select>
             </div>

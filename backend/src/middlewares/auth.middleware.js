@@ -22,4 +22,11 @@ const verifyAdmin = (req, res, next) => {
   next()
 }
 
-module.exports = { verifyToken, verifyAdmin }
+const verifyAdminOrEmployee = (req, res, next) => {
+  if (req.user.role !== 'ADMIN' && req.user.role !== 'EMPLOYEE') {
+    return res.status(403).json({ message: 'Acceso no autorizado' })
+  }
+  next()
+}
+
+module.exports = { verifyToken, verifyAdmin, verifyAdminOrEmployee }

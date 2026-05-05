@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import api from '../../api/axios'
 import logo from '../../assets/logo_tech.png'
 import { useAuth } from '../../context/AuthContext'
+import GanttChart from '../../components/GanttChart'
 
 export default function ProjectDetail() {
   const [project, setProject] = useState(null)
@@ -83,6 +84,12 @@ export default function ProjectDetail() {
             </div>
             <span className="text-lg font-bold text-gray-700">{progress}%</span>
           </div>
+        </div>
+
+        {/* Diagrama de Gantt */}
+        <div className="bg-white rounded-2xl shadow p-6">
+          <h3 className="text-lg font-bold text-gray-700 mb-4">Diagrama de Gantt</h3>
+          <GanttChart tasks={project.tasks || []} />
         </div>
 
         {/* Tareas del proyecto */}
