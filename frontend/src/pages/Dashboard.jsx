@@ -1,6 +1,6 @@
-import logo from '../assets/logo_tech.png'
 import { useAuth } from '../context/AuthContext'
 import { useNavigate } from 'react-router-dom'
+import logo from '../assets/logo_tech.png'
 
 export default function Dashboard() {
   const { user, logout } = useAuth()
@@ -11,11 +11,22 @@ export default function Dashboard() {
     navigate('/login')
   }
 
-  const cards = [
+  const adminCards = [
+    { label: 'Usuarios', path: '/users', color: 'bg-purple-500', icon: '👤' },
     { label: 'Clientes', path: '/clients', color: 'bg-blue-500', icon: '👥' },
     { label: 'Proyectos', path: '/projects', color: 'bg-green-500', icon: '📁' },
     { label: 'Tareas', path: '/tasks', color: 'bg-yellow-500', icon: '✅' },
+    { label: 'Sesiones', path: '/sessions', color: 'bg-red-500', icon: '🔐' },
+    { label: 'Historial de Cambios', path: '/changelog', color: 'bg-gray-600', icon: '📋' },
+    { label: 'Analíticas', path: '/analytics', color: 'bg-indigo-500', icon: '📊' },
   ]
+
+  const clientCards = [
+    { label: 'Mis Proyectos', path: '/projects', color: 'bg-green-500', icon: '📁' },
+    { label: 'Mis Tareas', path: '/tasks', color: 'bg-yellow-500', icon: '✅' },
+  ]
+
+  const cards = user?.role === 'ADMIN' ? adminCards : clientCards
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -25,7 +36,7 @@ export default function Dashboard() {
           <span className="text-lg font-bold">TechSolutions</span>
         </div>
         <div className="flex items-center gap-4">
-          <span className="text-sm">Hola, {user?.name} ({user?.role})</span>
+          <span className="text-sm">Hola, {user?.name} ({user?.role === 'ADMIN' ? 'Administrador' : 'Cliente'})</span>
           <button onClick={handleLogout}
             className="bg-white text-blue-600 px-4 py-1 rounded-lg text-sm font-semibold hover:bg-gray-100 transition">
             Cerrar Sesión

@@ -8,13 +8,17 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  name      String
-  email     String   @unique
-  password  String
-  role      Role     @default(USER)
-  createdAt DateTime @default(now())
-  tasks     Task[]
+  id            Int          @id @default(autoincrement())
+  name          String
+  email         String       @unique
+  password      String
+  role          Role         @default(CLIENT)
+  createdAt     DateTime     @default(now())
+  deletedAt     DateTime?
+  tasks         Task[]
+  sessions      SessionLog[]
+  changes       ChangeLog[]
+  clientProfile Client?
 }
 
 model Client {
@@ -25,38 +29,69 @@ model Client {
   company   String?
   status    String    @default("active")
   createdAt DateTime  @default(now())
+  deletedAt DateTime?
+  userId    Int?      @unique
+  user      User?     @relation(fields: [userId], references: [id])
   projects  Project[]
 }
 
 model Project {
-  id          Int      @id @default(autoincrement())
+  id          Int         @id @default(autoincrement())
   name        String
   description String?
   startDate   DateTime
   endDate     DateTime?
-  status      String   @default("active")
+  status      String      @default("active")
   clientId    Int
-  client      Client   @relation(fields: [clientId], references: [id])
-  createdAt   DateTime @default(now())
+  client      Client      @relation(fields: [clientId], references: [id])
+  createdAt   DateTime    @default(now())
+  deletedAt   DateTime?
   tasks       Task[]
+  changes     ChangeLog[]
 }
 
 model Task {
-  id          Int      @id @default(autoincrement())
+  id          Int         @id @default(autoincrement())
   title       String
   description String?
-  priority    Priority @default(MEDIUM)
-  status      String   @default("pending")
+  priority    Priority    @default(MEDIUM)
+  status      String      @default("pending")
   projectId   Int
-  project     Project  @relation(fields: [projectId], references: [id])
+  project     Project     @relation(fields: [projectId], references: [id])
   userId      Int?
-  user        User?    @relation(fields: [userId], references: [id])
-  createdAt   DateTime @default(now())
+  user        User?       @relation(fields: [userId], references: [id])
+  createdAt   DateTime    @default(now())
+  deletedAt   DateTime?
+  changes     ChangeLog[]
+}
+
+model SessionLog {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  loginAt   DateTime @default(now())
+  ip        String?
+}
+
+model ChangeLog {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  entity    String
+  entityId  Int
+  action    String
+  before    Json?
+  after     Json?
+  createdAt DateTime @default(now())
+  projectId Int?
+  project   Project? @relation(fields: [projectId], references: [id])
+  taskId    Int?
+  task      Task?    @relation(fields: [taskId], references: [id])
 }
 
 enum Role {
   ADMIN
-  USER
+  CLIENT
 }
 
 enum Priority {

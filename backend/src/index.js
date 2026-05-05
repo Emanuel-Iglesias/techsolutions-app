@@ -6,6 +6,7 @@ const authRoutes = require('./routes/auth.routes')
 const clientRoutes = require('./routes/client.routes')
 const projectRoutes = require('./routes/project.routes')
 const taskRoutes = require('./routes/task.routes')
+const changelogRoutes = require('./routes/changelog.routes')
 
 const app = express()
 
@@ -16,6 +17,7 @@ app.use('/api/auth', authRoutes)
 app.use('/api/clients', clientRoutes)
 app.use('/api/projects', projectRoutes)
 app.use('/api/tasks', taskRoutes)
+app.use('/api/changelog', changelogRoutes)
 
 app.get('/', (req, res) => {
   res.json({ message: 'TechSolutions API funcionando' })

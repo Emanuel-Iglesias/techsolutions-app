@@ -2,6 +2,7 @@ import logo from '../../assets/logo_tech.png'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import api from '../../api/axios'
+import { generateReport } from '../../utils/report'
 
 export default function TaskList() {
   const [tasks, setTasks] = useState([])
@@ -18,6 +19,19 @@ export default function TaskList() {
     if (!confirm('¿Eliminar tarea?')) return
     await api.delete(`/tasks/${id}`)
     fetchTasks()
+  }
+
+  const handleReport = () => {
+    const columns = ['ID', 'Título', 'Proyecto', 'Responsable', 'Prioridad', 'Estado']
+    const rows = tasks.map(t => [
+      t.id,
+      t.title,
+      t.project?.name || '-',
+      t.user?.name || '-',
+      t.priority,
+      t.status
+    ])
+    generateReport('Reporte de Tareas', columns, rows)
   }
 
   const priorityStyle = {
@@ -48,6 +62,14 @@ export default function TaskList() {
       <div className="max-w-6xl mx-auto mt-8 px-6">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-bold text-gray-700">Tareas</h2>
+          <button onClick={handleReport}
+            className="bg-indigo-500 text-white px-4 py-2 rounded-lg hover:bg-indigo-600 transition font-semibold">
+            📄 Reporte
+          </button>
+          <button onClick={() => navigate('/history?entity=tasks')}
+            className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition font-semibold">
+            📋 Historial
+          </button>
           <button onClick={() => navigate('/tasks/new')}
             className="bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600 transition font-semibold">
             + Nueva Tarea

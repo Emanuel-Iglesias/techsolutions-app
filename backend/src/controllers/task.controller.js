@@ -1,14 +1,48 @@
 const prisma = require('../prisma')
 
+const logChange = async (userId, entity, entityId, action, before, after) => {
+  await prisma.changeLog.create({
+    data: { userId, entity, entityId, action, before, after }
+  })
+}
+
 const getAll = async (req, res) => {
   try {
-    const tasks = await prisma.task.findMany({
-      include: { project: true, user: true },
-      orderBy: { createdAt: 'desc' }
-    })
+    const { role, id } = req.user
+    let tasks
+
+    if (role === 'ADMIN') {
+      tasks = await prisma.task.findMany({
+        where: { deletedAt: null },
+        include: { project: true, user: true },
+        orderBy: { createdAt: 'desc' }
+      })
+    } else {
+      const client = await prisma.client.findUnique({ where: { userId: id } })
+      if (!client) return res.json([])
+      tasks = await prisma.task.findMany({
+        where: { project: { clientId: client.id }, deletedAt: null },
+        include: { project: true, user: true },
+        orderBy: { createdAt: 'desc' }
+      })
+    }
+
     res.json(tasks)
   } catch (error) {
     res.status(500).json({ message: 'Error al obtener tareas' })
+  }
+}
+
+const getDeleted = async (req, res) => {
+  try {
+    const tasks = await prisma.task.findMany({
+      where: { deletedAt: { not: null } },
+      include: { project: true, user: true },
+      orderBy: { deletedAt: 'desc' }
+    })
+    res.json(tasks)
+  } catch (error) {
+    res.status(500).json({ message: 'Error al obtener historial' })
   }
 }
 
@@ -30,14 +64,14 @@ const create = async (req, res) => {
     const { title, description, priority, status, projectId, userId } = req.body
     const task = await prisma.task.create({
       data: {
-        title,
-        description,
+        title, description,
         priority: priority || 'MEDIUM',
         status: status || 'pending',
         projectId: Number(projectId),
         userId: userId ? Number(userId) : null
       }
     })
+    await logChange(req.user.id, 'Task', task.id, 'CREATE', null, task)
     res.status(201).json({ message: 'Tarea creada', task })
   } catch (error) {
     res.status(500).json({ message: 'Error al crear tarea' })
@@ -46,18 +80,17 @@ const create = async (req, res) => {
 
 const update = async (req, res) => {
   try {
+    const before = await prisma.task.findUnique({ where: { id: Number(req.params.id) } })
     const { title, description, priority, status, projectId, userId } = req.body
     const task = await prisma.task.update({
       where: { id: Number(req.params.id) },
       data: {
-        title,
-        description,
-        priority,
-        status,
+        title, description, priority, status,
         projectId: Number(projectId),
         userId: userId ? Number(userId) : null
       }
     })
+    await logChange(req.user.id, 'Task', task.id, 'UPDATE', before, task)
     res.json({ message: 'Tarea actualizada', task })
   } catch (error) {
     res.status(500).json({ message: 'Error al actualizar tarea' })
@@ -66,11 +99,16 @@ const update = async (req, res) => {
 
 const remove = async (req, res) => {
   try {
-    await prisma.task.delete({ where: { id: Number(req.params.id) } })
+    const before = await prisma.task.findUnique({ where: { id: Number(req.params.id) } })
+    const task = await prisma.task.update({
+      where: { id: Number(req.params.id) },
+      data: { deletedAt: new Date() }
+    })
+    await logChange(req.user.id, 'Task', task.id, 'DELETE', before, null)
     res.json({ message: 'Tarea eliminada' })
   } catch (error) {
     res.status(500).json({ message: 'Error al eliminar tarea' })
   }
 }
 
-module.exports = { getAll, getOne, create, update, remove }
+module.exports = { getAll, getDeleted, getOne, create, update, remove }
