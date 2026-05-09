@@ -8,6 +8,7 @@ export default function UserForm() {
   const [availableClients, setAvailableClients] = useState([])
   const { id } = useParams()
   const navigate = useNavigate()
+  const [error, setError] = useState('')
 
   useEffect(() => {
     api.get('/clients/available').then(res => setAvailableClients(res.data))
@@ -23,7 +24,7 @@ export default function UserForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    console.log('form:', form)
+    setError('')
     try {
       if (id) {
         await api.put(`/auth/users/${id}`, form)
@@ -32,7 +33,7 @@ export default function UserForm() {
       }
       navigate('/users')
     } catch (error) {
-      console.error('Error:', error.response?.data)
+      setError(error.response?.data?.message || 'Error al guardar usuario')
     }
   }
 
@@ -48,6 +49,7 @@ export default function UserForm() {
       <div className="max-w-lg mx-auto mt-10 px-6">
         <div className="bg-white rounded-2xl shadow p-8">
           <h2 className="text-2xl font-bold text-gray-700 mb-6">{id ? 'Editar' : 'Nuevo'} Usuario</h2>
+          {error && <p className="text-red-500 text-sm bg-red-50 p-3 rounded-lg mb-4">{error}</p>}
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-600 mb-1">Nombre</label>

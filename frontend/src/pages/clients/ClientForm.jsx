@@ -7,6 +7,7 @@ export default function ClientForm() {
   const [form, setForm] = useState({ name: '', email: '', phone: '', company: '', status: 'active' })
   const { id } = useParams()
   const navigate = useNavigate()
+  const [error, setError] = useState('')
 
   useEffect(() => {
     if (id) api.get(`/clients/${id}`).then(res => setForm(res.data))
@@ -16,12 +17,17 @@ export default function ClientForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    if (id) {
-      await api.put(`/clients/${id}`, form)
-    } else {
-      await api.post('/clients', form)
+    setError('')
+    try {
+      if (id) {
+        await api.put(`/clients/${id}`, form)
+      } else {
+        await api.post('/clients', form)
+      }
+      navigate('/clients')
+    } catch (error) {
+      setError(error.response?.data?.message || 'Error al guardar cliente')
     }
-    navigate('/clients')
   }
 
   return (
@@ -36,6 +42,7 @@ export default function ClientForm() {
       <div className="max-w-lg mx-auto mt-10 px-6">
         <div className="bg-white rounded-2xl shadow p-8">
           <h2 className="text-2xl font-bold text-gray-700 mb-6">{id ? 'Editar' : 'Nuevo'} Cliente</h2>
+          {error && <p className="text-red-500 text-sm bg-red-50 p-3 rounded-lg mb-4">{error}</p>}
           <form onSubmit={handleSubmit} className="space-y-4">
             {[{ name: 'name', label: 'Nombre', required: true }, { name: 'email', label: 'Email', required: true }, { name: 'phone', label: 'Teléfono', required: false }, { name: 'company', label: 'Empresa', required: false }].map(f => (
               <div key={f.name}>

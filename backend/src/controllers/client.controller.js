@@ -66,6 +66,10 @@ const getOne = async (req, res) => {
 const create = async (req, res) => {
   try {
     const { name, email, phone, company, status, userId } = req.body
+
+    const exists = await prisma.client.findUnique({ where: { email } })
+    if (exists) return res.status(400).json({ message: 'El correo ya está registrado' })
+
     const client = await prisma.client.create({
       data: { name, email, phone, company, status: status || 'active', userId: userId ? Number(userId) : null }
     })
