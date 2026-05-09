@@ -75,8 +75,8 @@ export default function UserList() {
                   <td className="px-6 py-4 font-medium text-gray-800">{u.name}</td>
                   <td className="px-6 py-4 text-gray-600">{u.email}</td>
                   <td className="px-6 py-4">
-                    <span className={`px-2 py-1 rounded-full text-xs font-semibold ${u.role === 'ADMIN' ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700'}`}>
-                      {u.role === 'ADMIN' ? 'Administrador' : 'Cliente'}
+                    <span className={`px-2 py-1 rounded-full text-xs font-semibold ${u.role === 'ADMIN' ? 'bg-purple-100 text-purple-700' : u.role === 'EMPLOYEE' ? 'bg-orange-100 text-orange-700' : 'bg-blue-100 text-blue-700'}`}>
+                      {u.role === 'ADMIN' ? 'Administrador' : u.role === 'EMPLOYEE' ? 'Empleado' : 'Cliente'}
                     </span>
                   </td>
                   <td className="px-6 py-4 text-gray-600">{new Date(u.createdAt).toLocaleDateString()}</td>

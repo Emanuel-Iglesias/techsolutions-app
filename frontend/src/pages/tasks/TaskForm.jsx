@@ -15,7 +15,7 @@ export default function TaskForm() {
 
   useEffect(() => {
     api.get('/projects').then(res => setProjects(res.data))
-    api.get('/auth/users').then(res => setUsers(res.data)).catch(() => {})
+    api.get('/auth/employees').then(res => setUsers(res.data)).catch(() => {})
     if (id) {
       api.get(`/tasks/${id}`).then(res => {
         const t = res.data
