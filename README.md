@@ -88,21 +88,31 @@ TechSolutions App permite:
 
 # 🧩 Arquitectura del Proyecto
 
+# 🧩 Arquitectura del Proyecto
+
 ```bash
 techsolutions-app/
-│
 ├── backend/
 │   ├── prisma/
 │   │   ├── schema.prisma
 │   │   └── migrations/
-│   │
 │   ├── src/
 │   │   ├── controllers/
+│   │   │   ├── auth.controller.js
+│   │   │   ├── client.controller.js
+│   │   │   ├── project.controller.js
+│   │   │   ├── task.controller.js
+│   │   │   └── changelog.controller.js
 │   │   ├── middlewares/
+│   │   │   └── auth.middleware.js
 │   │   ├── routes/
+│   │   │   ├── auth.routes.js
+│   │   │   ├── client.routes.js
+│   │   │   ├── project.routes.js
+│   │   │   ├── task.routes.js
+│   │   │   └── changelog.routes.js
 │   │   ├── prisma.js
 │   │   └── index.js
-│   │
 │   ├── .env
 │   └── package.json
 │
@@ -110,14 +120,41 @@ techsolutions-app/
     ├── public/
     ├── src/
     │   ├── api/
+    │   │   └── axios.js
     │   ├── assets/
+    │   │   └── logo_tech.png
     │   ├── components/
+    │   │   ├── GanttChart.jsx
+    │   │   └── ResponsiveTable.jsx
     │   ├── context/
+    │   │   └── AuthContext.jsx
     │   ├── pages/
+    │   │   ├── auth/
+    │   │   │   ├── Login.jsx
+    │   │   │   └── Register.jsx
+    │   │   ├── admin/
+    │   │   │   ├── UserList.jsx
+    │   │   │   ├── UserForm.jsx
+    │   │   │   ├── SessionLogs.jsx
+    │   │   │   ├── ChangeLog.jsx
+    │   │   │   ├── Analytics.jsx
+    │   │   │   ├── History.jsx
+    │   │   │   └── GeneralReport.jsx
+    │   │   ├── clients/
+    │   │   │   ├── ClientList.jsx
+    │   │   │   └── ClientForm.jsx
+    │   │   ├── projects/
+    │   │   │   ├── ProjectList.jsx
+    │   │   │   ├── ProjectForm.jsx
+    │   │   │   └── ProjectDetail.jsx
+    │   │   ├── tasks/
+    │   │   │   ├── TaskList.jsx
+    │   │   │   └── TaskForm.jsx
+    │   │   └── Dashboard.jsx
     │   ├── utils/
+    │   │   └── report.js
     │   ├── App.jsx
     │   └── main.jsx
-    │
     ├── vercel.json
     └── package.json
 ```
