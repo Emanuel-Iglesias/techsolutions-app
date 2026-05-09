@@ -44,12 +44,12 @@ export default function ProjectDetail() {
 
   return (
     <div className="min-h-screen bg-gray-100">
-      <nav className="bg-blue-600 text-white px-6 py-4 flex justify-between items-center shadow">
+      <nav className="bg-blue-600 text-white px-4 sm:px-6 py-4 flex justify-between items-center shadow">
         <div className="flex items-center gap-2">
           <img src={logo} alt="TechSolutions" className="h-8" />
-          <span className="text-lg font-bold">TechSolutions</span>
+          <span className="text-lg font-bold hidden sm:block">TechSolutions</span>
         </div>
-        <button onClick={() => navigate('/projects')} className="bg-white text-blue-600 px-4 py-1 rounded-lg text-sm font-semibold hover:bg-gray-100 transition">← Proyectos</button>
+        <button onClick={() => navigate('/projects')} className="bg-white text-blue-600 px-3 py-1 rounded-lg text-xs sm:text-sm font-semibold hover:bg-gray-100 transition">← Proyectos</button>
       </nav>
 
       <div className="max-w-4xl mx-auto mt-8 px-6 space-y-6">

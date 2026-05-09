@@ -43,22 +43,15 @@ export default function UserList() {
         <button onClick={() => navigate('/dashboard')} className="bg-white text-blue-600 px-4 py-1 rounded-lg text-sm font-semibold hover:bg-gray-100 transition">← Dashboard</button>
       </nav>
       <div className="max-w-6xl mx-auto mt-8 px-6">
-        <div className="flex justify-between items-center mb-6">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-3">
           <h2 className="text-2xl font-bold text-gray-700">Usuarios</h2>
-          <button onClick={handleReport}
-            className="bg-indigo-500 text-white px-4 py-2 rounded-lg hover:bg-indigo-600 transition font-semibold">
-            📄 Reporte
-          </button>
-          <button onClick={() => navigate('/history?entity=users')}
-            className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition font-semibold">
-            📋 Historial
-          </button>
-          <button onClick={() => navigate('/users/new')}
-            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition font-semibold">
-            + Nuevo Usuario
-          </button>
+          <div className="flex flex-wrap gap-2">
+            <button onClick={handleReport} className="bg-indigo-500 text-white px-3 py-2 rounded-lg hover:bg-indigo-600 transition font-semibold text-sm">📄 Reporte</button>
+            <button onClick={() => navigate('/history?entity=users')} className="bg-gray-500 text-white px-3 py-2 rounded-lg hover:bg-gray-600 transition font-semibold text-sm">📋 Historial</button>
+            <button onClick={() => navigate('/users/new')} className="bg-blue-600 text-white px-3 py-2 rounded-lg hover:bg-blue-700 transition font-semibold text-sm">+ Nuevo Usuario</button>
+          </div>
         </div>
-        <div className="bg-white rounded-2xl shadow overflow-hidden">
+        <div className="bg-white rounded-2xl shadow overflow-hidden overflow-x-auto">
           <table className="w-full text-sm">
             <thead className="bg-gray-50 text-gray-600 uppercase text-xs">
               <tr>

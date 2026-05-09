@@ -46,36 +46,23 @@ export default function ProjectList() {
 
   return (
     <div className="min-h-screen bg-gray-100">
-      <nav className="bg-blue-600 text-white px-6 py-4 flex justify-between items-center shadow">
+      <nav className="bg-blue-600 text-white px-4 sm:px-6 py-4 flex justify-between items-center shadow">
         <div className="flex items-center gap-2">
           <img src={logo} alt="TechSolutions" className="h-8" />
-          <span className="text-lg font-bold">TechSolutions</span>
+          <span className="text-lg font-bold hidden sm:block">TechSolutions</span>
         </div>
-        <button onClick={() => navigate('/dashboard')} className="bg-white text-blue-600 px-4 py-1 rounded-lg text-sm font-semibold hover:bg-gray-100 transition">← Dashboard</button>
+        <button onClick={() => navigate('/dashboard')} className="bg-white text-blue-600 px-3 py-1 rounded-lg text-xs sm:text-sm font-semibold hover:bg-gray-100 transition">← Dashboard</button>
       </nav>
       <div className="max-w-6xl mx-auto mt-8 px-6">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold text-gray-700">{isAdmin ? 'Proyectos' : 'Mis Proyectos'}</h2>
-          <div className="flex gap-2">
-            {isAdmin && (
-              <>
-                <button onClick={handleReport}
-                  className="bg-indigo-500 text-white px-4 py-2 rounded-lg hover:bg-indigo-600 transition font-semibold">
-                  📄 Reporte
-                </button>
-                <button onClick={() => navigate('/history?entity=projects')}
-                  className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition font-semibold">
-                  📋 Historial
-                </button>
-                <button onClick={() => navigate('/projects/new')}
-                  className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition font-semibold">
-                  + Nuevo Proyecto
-                </button>
-              </>
-            )}
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-3">
+          <h2 className="text-2xl font-bold text-gray-700">Proyectos</h2>
+          <div className="flex flex-wrap gap-2">
+            <button onClick={handleReport} className="bg-indigo-500 text-white px-3 py-2 rounded-lg hover:bg-indigo-600 transition font-semibold text-sm">📄 Reporte</button>
+            <button onClick={() => navigate('/history?entity=projects')} className="bg-gray-500 text-white px-3 py-2 rounded-lg hover:bg-gray-600 transition font-semibold text-sm">📋 Historial</button>
+            <button onClick={() => navigate('/projects/new')} className="bg-blue-600 text-white px-3 py-2 rounded-lg hover:bg-blue-700 transition font-semibold text-sm">+ Nuevo Proyecto</button>
           </div>
         </div>
-        <div className="bg-white rounded-2xl shadow overflow-hidden">
+        <div className="bg-white rounded-2xl shadow overflow-hidden overflow-x-auto">
           <table className="w-full text-sm">
             <thead className="bg-gray-50 text-gray-600 uppercase text-xs">
               <tr>

@@ -60,7 +60,7 @@ export default function History() {
 
         {/* Eliminados */}
         {tab === 'deleted' && (
-          <div className="bg-white rounded-2xl shadow overflow-hidden">
+          <div className="bg-white rounded-2xl shadow overflow-hidden overflow-x-auto">
             <table className="w-full text-sm">
               <thead className="bg-gray-50 text-gray-600 uppercase text-xs">
                 <tr>
@@ -87,7 +87,7 @@ export default function History() {
 
         {/* Cambios */}
         {tab === 'changes' && (
-          <div className="bg-white rounded-2xl shadow overflow-hidden">
+          <div className="bg-white rounded-2xl shadow overflow-hidden overflow-x-auto">
             <table className="w-full text-sm">
               <thead className="bg-gray-50 text-gray-600 uppercase text-xs">
                 <tr>
