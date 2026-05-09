@@ -5,12 +5,25 @@ import logo from '../../assets/logo_tech.png'
 
 export default function ChangeLog() {
   const [logs, setLogs] = useState([])
+  const [filtered, setFiltered] = useState([])
   const [selected, setSelected] = useState(null)
+  const [startDate, setStartDate] = useState('')
+  const [endDate, setEndDate] = useState('')
   const navigate = useNavigate()
 
   useEffect(() => {
-    api.get('/changelog').then(res => setLogs(res.data))
+    api.get('/changelog').then(res => {
+      setLogs(res.data)
+      setFiltered(res.data)
+    })
   }, [])
+
+  useEffect(() => {
+    let result = [...logs]
+    if (startDate) result = result.filter(l => new Date(l.createdAt) >= new Date(startDate))
+    if (endDate) result = result.filter(l => new Date(l.createdAt) <= new Date(endDate + 'T23:59:59'))
+    setFiltered(result)
+  }, [startDate, endDate, logs])
 
   const actionStyle = {
     CREATE: 'bg-green-100 text-green-700',
@@ -18,7 +31,7 @@ export default function ChangeLog() {
     DELETE: 'bg-red-100 text-red-700'
   }
 
-  const entityLabel = { Client: 'Cliente', Project: 'Proyecto', Task: 'Tarea' }
+  const entityLabel = { Client: 'Cliente', Project: 'Proyecto', Task: 'Tarea', User: 'Usuario' }
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -29,9 +42,23 @@ export default function ChangeLog() {
         </div>
         <button onClick={() => navigate('/dashboard')} className="bg-white text-blue-600 px-3 py-1 rounded-lg text-xs sm:text-sm font-semibold hover:bg-gray-100 transition">← Dashboard</button>
       </nav>
-      <div className="max-w-6xl mx-auto mt-8 px-6">
-        <h2 className="text-2xl font-bold text-gray-700 mb-6">Historial de Cambios</h2>
-        <div className="bg-white rounded-2xl shadow overflow-hidden overflow-x-auto">
+
+      <div className="max-w-6xl mx-auto mt-8 px-4 sm:px-6">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-6">
+          <h2 className="text-2xl font-bold text-gray-700">Historial de Cambios</h2>
+          <div className="flex flex-wrap gap-2 items-center">
+            <input type="date" value={startDate} onChange={e => setStartDate(e.target.value)}
+              className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400" />
+            <input type="date" value={endDate} onChange={e => setEndDate(e.target.value)}
+              className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400" />
+            <button onClick={() => { setStartDate(''); setEndDate('') }}
+              className="bg-gray-200 text-gray-700 px-3 py-2 rounded-lg hover:bg-gray-300 transition text-sm font-semibold">
+              Limpiar
+            </button>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-2xl shadow overflow-x-auto">
           <table className="w-full text-sm">
             <thead className="bg-gray-50 text-gray-600 uppercase text-xs">
               <tr>
@@ -43,7 +70,7 @@ export default function ChangeLog() {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
-              {logs.map(l => (
+              {filtered.map(l => (
                 <tr key={l.id} className="hover:bg-gray-50">
                   <td className="px-6 py-4 font-medium text-gray-800">{l.user?.name}</td>
                   <td className="px-6 py-4 text-gray-600">{entityLabel[l.entity] || l.entity} #{l.entityId}</td>
@@ -63,7 +90,7 @@ export default function ChangeLog() {
               ))}
             </tbody>
           </table>
-          {logs.length === 0 && <p className="text-center text-gray-400 py-8">No hay cambios registrados</p>}
+          {filtered.length === 0 && <p className="text-center text-gray-400 py-8">No hay cambios registrados</p>}
         </div>
       </div>
 
