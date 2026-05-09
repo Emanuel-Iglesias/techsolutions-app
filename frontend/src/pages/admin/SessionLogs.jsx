@@ -39,8 +39,8 @@ export default function SessionLogs() {
                   <td className="px-6 py-4 font-medium text-gray-800">{s.user?.name}</td>
                   <td className="px-6 py-4 text-gray-600">{s.user?.email}</td>
                   <td className="px-6 py-4">
-                    <span className={`px-2 py-1 rounded-full text-xs font-semibold ${s.user?.role === 'ADMIN' ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700'}`}>
-                      {s.user?.role === 'ADMIN' ? 'Administrador' : 'Cliente'}
+                    <span className={`px-2 py-1 rounded-full text-xs font-semibold ${s.user?.role === 'ADMIN' ? 'bg-purple-100 text-purple-700' : s.user?.role === 'EMPLOYEE' ? 'bg-orange-100 text-orange-700' : 'bg-blue-100 text-blue-700'}`}>
+                      {s.user?.role === 'ADMIN' ? 'Administrador' : s.user?.role === 'EMPLOYEE' ? 'Empleado' : 'Cliente'}
                     </span>
                   </td>
                   <td className="px-6 py-4 text-gray-600">{new Date(s.loginAt).toLocaleString()}</td>

@@ -17,6 +17,16 @@ export default function TaskList() {
     setTasks(res.data)
   }
 
+  const statusOrder = { pending: 0, in_progress: 1, completed: 2 }
+  const priorityOrder = { HIGH: 0, MEDIUM: 1, LOW: 2 }
+
+  const sortedTasks = [...tasks].sort((a, b) => {
+    if (statusOrder[a.status] !== statusOrder[b.status]) {
+      return statusOrder[a.status] - statusOrder[b.status]
+    }
+    return priorityOrder[a.priority] - priorityOrder[b.priority]
+  })
+
   useEffect(() => { fetchTasks() }, [])
 
   const handleDelete = async (id) => {
@@ -87,7 +97,7 @@ export default function TaskList() {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
-              {tasks.map(t => (
+              {sortedTasks.map(t => (
                 <tr key={t.id} className="hover:bg-gray-50">
                   <td className="px-6 py-4 font-medium text-gray-800">{t.title}</td>
                   <td className="px-6 py-4 text-gray-600">{t.project?.name}</td>

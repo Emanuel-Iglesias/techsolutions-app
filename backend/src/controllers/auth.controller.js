@@ -101,6 +101,13 @@ const updateUser = async (req, res) => {
 const deleteUser = async (req, res) => {
   try {
     const before = await prisma.user.findUnique({ where: { id: Number(req.params.id) } })
+    
+    // Limpiar userId del cliente asociado si existe
+    await prisma.client.updateMany({
+      where: { userId: Number(req.params.id) },
+      data: { userId: null }
+    })
+
     await prisma.user.update({
       where: { id: Number(req.params.id) },
       data: { deletedAt: new Date() }

@@ -17,6 +17,15 @@ const getAll = async (req, res) => {
         include: { client: true },
         orderBy: { createdAt: 'desc' }
       })
+    } else if (role === 'EMPLOYEE') {
+      projects = await prisma.project.findMany({
+        where: {
+          deletedAt: null,
+          tasks: { some: { userId: id, deletedAt: null } }
+        },
+        include: { client: true },
+        orderBy: { createdAt: 'desc' }
+      })
     } else {
       const client = await prisma.client.findUnique({ where: { userId: id } })
       if (!client) return res.json([])

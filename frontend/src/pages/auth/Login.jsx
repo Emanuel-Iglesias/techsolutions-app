@@ -26,8 +26,8 @@ export default function Login() {
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center">
       <div className="bg-white p-8 rounded-2xl shadow-md w-full max-w-md">
-        <div className="flex justify-center mb-6">
-          <img src={logo} alt="TechSolutions" className="h-16" />
+        <div className="flex justify-center mb-8">
+          <img src={logo} alt="TechSolutions" className="h-28" />
         </div>
         <h3 className="text-lg font-semibold text-gray-700 mb-4">Iniciar Sesión</h3>
         {error && <p className="text-red-500 text-sm mb-4">{error}</p>}

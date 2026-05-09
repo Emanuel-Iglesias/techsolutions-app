@@ -15,13 +15,19 @@ const getAll = async (req, res) => {
       tasks = await prisma.task.findMany({
         where: { deletedAt: null },
         include: { project: true, user: true },
-        orderBy: { createdAt: 'desc' }
+        orderBy: [
+          { status: 'asc' },
+          { priority: 'asc' }
+        ]
       })
     } else if (role === 'EMPLOYEE') {
       tasks = await prisma.task.findMany({
         where: { userId: id, deletedAt: null },
         include: { project: true, user: true },
-        orderBy: { createdAt: 'desc' }
+        orderBy: [
+          { status: 'asc' },
+          { priority: 'asc' }
+        ]
       })
     } else {
       const client = await prisma.client.findUnique({ where: { userId: id } })
@@ -29,7 +35,10 @@ const getAll = async (req, res) => {
       tasks = await prisma.task.findMany({
         where: { project: { clientId: client.id }, deletedAt: null },
         include: { project: true, user: true },
-        orderBy: { createdAt: 'desc' }
+        orderBy: [
+          { status: 'asc' },
+          { priority: 'asc' }
+        ]
       })
     }
 
